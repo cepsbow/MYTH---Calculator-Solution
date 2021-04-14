@@ -14,15 +14,15 @@
 /* verilator lint_on WIDTH */
 \TLV
    $reset = *reset;
-   $val1_literal[25:0] = 26'b00000000000000000000000000;
-   $val2_literal[27:0] = 28'b0000000000000000000000000000;
-   $val1[31:0] = >>1$out;
-   $val2[31:0] = { $val2_literal , $val2_rand[3:0] };
-   $sum[31:0] = $val1 + $val2;
+   //$val1_literal[25:0] = 26'b00000000000000000000000000; // Zeroes to combine with val1_rand (Not used in sequential mode)
+   $val2_literal[27:0] = 28'b0000000000000000000000000000; // Zeroes to combine with val2_rand
+   $val1[31:0] = >>1$out; // Reset output to $out
+   $val2[31:0] = { $val2_literal , $val2_rand[3:0] }; // Combine values to create the added value
+   $sum[31:0] = $val1 + $val2; // Operation defintions
    $diff[31:0] = $val1 - $val2;
    $prod[31:0] = $val1 * $val2;
    $quot[31:0] = $val1 / $val2;
-   $out[31:0] = $reset ? 32'b0 :
+   $out[31:0] = $reset ? 32'b0 : // Output multiplexer
       $op[1:0] == 2'b11 ? $quot :
       $op == 2'b10 ? $prod :
       $op == 2'b01 ? $diff :
